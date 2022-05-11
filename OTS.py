@@ -199,3 +199,303 @@ def check_in():
 
 ############################################################################################### P R O G R A M        S T A R T #############################################################################################################
 check_connection()
+while Set == False:
+    while Set1 == False:
+        print(clear)
+        print("           CURRENT OPERATION: "+OPERATION)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""
+           --  ENTER OPERATION NAME --
+                                 """)
+            choice = input("OPERATION ")
+            print("")
+            OPERATION = choice.upper()
+            for line in fileinput.FileInput("var.py", inplace=1):
+                if "OPERATION      = " in line:
+                    line = line.replace(line, "OPERATION      = '"+str(OPERATION)+"'\n")
+                print(line, end='')
+            print(clear)
+        elif CONF.upper() == "Y":
+            Set1 = True
+        else:
+            continue
+    while Set2 == False:
+        print(clear)
+        print("           CURRENT OVERWATCH: "+OVERWATCH)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""
+           -- ENTER OVERWATCH PHONE --
+                                 """)
+            choice = input("OVERWATCH PHONE NR : ")
+            print("")
+            OVERWATCH = choice.upper()
+            for line in fileinput.FileInput("var.py", inplace=1):
+                if "OVERWATCH      = " in line:
+                    line = line.replace(line, "OVERWATCH      = '"+str(OVERWATCH)+"'\n")
+                print(line, end='')
+            print(clear)
+        elif CONF.upper() == "Y":
+            Set2 = True
+        else:
+            continue
+    if "ngrok.exe" in (p.name() for p in psutil.process_iter()):
+        print(Fore.GREEN+"NGROK ALREADY RUNNING"+Style.RESET_ALL)
+        time.sleep(0.5)
+    else:
+        os.startfile("NGROK.lnk")
+    while Set3 == False:
+        print(clear)
+        print("           CURRENT NGROK URL: "+URL)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""
+           --    ENTER NGROK URL   --
+                                 """)
+            choice = input("           http://")
+            print("")
+            URL = "http://"+choice
+            for line in fileinput.FileInput("var.py", inplace=1):
+                if "URL            = " in line:
+                    line = line.replace(line, "URL            = '"+str(URL)+"'\n")
+                print(line, end='')
+            print(clear)
+        elif CONF.upper() == "Y":
+            Set3 = True
+        else:
+            continue
+    while Set4 == False:
+        print(clear)
+        if   timeT == FOURhours:
+            x = "4h"
+        elif timeT == THREEhours:
+            x = "3h"
+        elif timeT == TWOhours:
+            x = "2h"
+        elif timeT == ONEhour:
+            x = "1h"
+        elif timeT == test:
+            x = "3min (test)"
+        print("           CURRENT TIME T: "+x)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""
+           -- CHOOSE T TIME WINDOW  --
+                    (1) 1h
+                    (2) 2h
+                    (3) 3h
+                    (4) 4h
+                    (T) 3 minutes (test)
+
+                       """)
+            choice = input("")
+            if   choice == "1":
+                timeT = '1:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeT          = " in line:
+                        line = line.replace(line, "timeT          = '"+str(timeT)+"'\n")
+                    print(line, end='')
+            elif choice == "2":
+                timeT = '2:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeT          = " in line:
+                        line = line.replace(line, "timeT          = '"+str(timeT)+"'\n")
+                    print(line, end='')
+            elif choice == "3":
+                timeT = '3:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeT          = " in line:
+                        line = line.replace(line, "timeT          = '"+str(timeT)+"'\n")
+                    print(line, end='')
+            elif choice == "4":
+                timeT = '4:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeT          = " in line:
+                        line = line.replace(line, "timeT          = '"+str(timeT)+"'\n")
+                    print(line, end='')
+            elif choice.upper() == "T":
+                timeT = '0:03:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeT          = " in line:
+                        line = line.replace(line, "timeT          = '"+str(timeT)+"'\n")
+                    print(line, end='')
+            print(clear)
+        elif CONF.upper() == "Y":
+            Set4 = True
+            break #why is this necessary????
+        else:
+            continue
+    while Set5 == False:
+        print(clear)
+        if   timeC == FOURhours:
+            x = "4h"
+        elif timeC == THREEhours:
+            x = "3h"
+        elif timeC == TWOhours:
+            x = "2h"
+        elif timeC == ONEhour:
+            x = "1h"
+        elif timeC == test:
+            x = "3min (test)"
+        print("           CURRENT TIME C: "+x)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""
+           -- CHOOSE C TIME WINDOW  --
+                    (1) 1h
+                    (2) 2h
+                    (3) 3h
+                    (4) 4h
+                    (T) 3 minutes (test)
+
+                       """)
+            choice = input("")
+            if   choice == "1":
+                timeC = '1:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeC          = " in line:
+                        line = line.replace(line, "timeC          = '"+str(timeC)+"'\n")
+                    print(line, end='')
+            elif choice == "2":
+                timeC = '2:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeC          = " in line:
+                        line = line.replace(line, "timeC          = '"+str(timeC)+"'\n")
+                    print(line, end='')
+            elif choice == "3":
+                timeC = '3:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeC          = " in line:
+                        line = line.replace(line, "timeC          = '"+str(timeC)+"'\n")
+                    print(line, end='')
+            elif choice == "4":
+                timeC = '4:00:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeC          = " in line:
+                        line = line.replace(line, "timeC          = '"+str(timeC)+"'\n")
+                    print(line, end='')
+            elif choice.upper() == "T":
+                timeC = '0:03:00'
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "timeC          = " in line:
+                        line = line.replace(line, "timeC          = '"+str(timeC)+"'\n")
+                    print(line, end='')
+            print(clear)
+        elif CONF.upper() == "Y":
+            Set5 = True
+            break #why is this necessary????
+        else:
+            continue
+    while Set6 == False:
+        print(clear)
+        x = mode
+        print("           CURRENT MODE: "+x)
+        print("           CORRECT? (y/n)")
+        CONF = input("           ---> ")
+        if   CONF.upper() == "N":
+            print(clear)
+            print("""               --
+           --    CHOOSE OTS MODE    --
+                    (1) HOT
+                    (2) TEST
+                       """)
+            choice = input("")
+            if   choice == "1":
+                mode = "HOT"
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "mode           = " in line:
+                        line = line.replace(line, "mode           = '"+str("HOT")+"'\n")
+                    print(line, end='')
+                MODE = Fore.LIGHTRED_EX+"                    HOT HOT HOT"+Style.RESET_ALL
+            elif choice == "2":
+                mode = "TEST"
+                for line in fileinput.FileInput("var.py", inplace=1):
+                    if "mode           = " in line:
+                        line = line.replace(line, "mode           = '"+str("TEST")+"'\n")
+                    print(line, end='')
+                MODE = Fore.GREEN      +"                    TEST TEST TEST"+Style.RESET_ALL
+            print(clear)
+        elif CONF.upper() == "Y":
+            if mode == "HOT":
+                MODE = Fore.LIGHTRED_EX+"                    HOT HOT HOT"+Style.RESET_ALL
+            elif mode == "TEST":
+                MODE = Fore.GREEN      +"                    TEST TEST TEST"+Style.RESET_ALL
+            Set6 = True
+            break #why is this necessary? is it?
+        else:
+            continue
+    SET = False
+    while SET == False:
+        print(clear)
+        if   timeT == "4:00:00":
+            timeT = datetime.timedelta(hours=4)
+            TTT   = "4 hours"
+        elif timeT == "3:00:00":
+            timeT = datetime.timedelta(hours=3)
+            TTT = "3 hours"
+        elif timeT == "2:00:00":
+            timeT = datetime.timedelta(hours=2)
+            TTT = "2 hours"
+        elif timeT == "1:00:00":
+            timeT = datetime.timedelta(hours=1)
+            TTT = "1 hour"
+        elif timeT == "0:03:00":
+            timeT = datetime.timedelta(minutes=3)
+            TTT = "3 minutes (test)"
+        if   timeC == "4:00:00":
+            timeC = datetime.timedelta(hours=4)
+            CCC = "4 hours"
+        elif timeC == "3:00:00":
+            timeC = datetime.timedelta(hours=3)
+            CCC = "3 hours"
+        elif timeC == "2:00:00":
+            timeC = datetime.timedelta(hours=2)
+            CCC = "2 hours"
+        elif timeC == "1:00:00":
+            timeC = datetime.timedelta(hours=1)
+            CCC = "1 hour"
+        elif timeC == "0:03:00":
+            timeC = datetime.timedelta(minutes=3)
+            CCC = "3 minutes (test)"
+        print("""
+
+  Operative Travel Security System
+  --      current settings      --
+
+      OPERATION """+Fore.LIGHTGREEN_EX+OPERATION+Style.RESET_ALL+          """
+   OVERWATCH     = """+Fore.LIGHTGREEN_EX+str(OVERWATCH)+Style.RESET_ALL+  """
+   NGROK URL     = """+Fore.LIGHTGREEN_EX+str(URL)+Style.RESET_ALL+        """
+   T TIME WINDOW = """+Fore.LIGHTGREEN_EX+str(TTT)+Style.RESET_ALL+        """
+   C TIME WINDOW = """+Fore.LIGHTGREEN_EX+str(CCC)+Style.RESET_ALL+        """
+   MODE          = """+                   mode                    +        """
+
+
+        (1) START OTS | RERUN SETTINGS (2)"""+Style.RESET_ALL)
+        CONF = input("           ---> ")
+        if   CONF.upper() == "1":
+            print(clear)
+            print("")
+            SET = True
+            Set = True
+        elif CONF.upper() == "2":
+            Set  = False
+            Set1 = False
+            Set2 = False
+            Set3 = False
+            Set4 = False
+            Set5 = False
+            SET  = True
+            break #why is this necessary????
+        else:
+            continue
