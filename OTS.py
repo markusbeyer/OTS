@@ -37,6 +37,8 @@ server         = smtplib.SMTP('smtp.gmail.com', 587) #gmail  server
 ACCOUNT        = REPLACEME5
 TOKEN          = REPLACEME6
 client         = Client(ACCOUNT,TOKEN)               #twilio client
+# Your Phone Number for Notification
+your_phone     = REPLACEME7
 # OTS PARAMETER VARS
 OTS            = True
 runningT       = True
@@ -499,3 +501,256 @@ while Set == False:
             break #why is this necessary????
         else:
             continue
+
+#Set Mode Part 1
+if mode == "HOT":
+    COPS   = "+4930110"      #Police Germany
+    FOROFF = "+493018172000" #Foreign Office Germany
+elif mode == "TEST":
+    COPS   = your_phone
+    FOROFF = your_phone 
+
+#Set Mode Part 2
+while run == False:
+        print(clear)
+        print("""
+           [1] TIMEMODE   |   CHECKMODE [2]
+                                 """)
+        choice = input("           ---> ")
+        if choice == "1":
+                TIMEMODE  = True
+                run       = True
+        elif choice == "2":
+                CHECKMODE = True
+                run       = True
+        else:
+                print(Fore.LIGHTRED_EX+"INVALID"+Style.RESET_ALL)
+                time.sleep(1)
+
+#do bling() with max of 7 times
+run = True
+while run == True:
+    bling()
+    c += 1
+    if c == 7:
+        run = False
+# OTS
+while OTS == True:
+    if TIMEMODE == True:################################################################################################################################################################################################# TIMEMODE
+        timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+        timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+        runningT = True
+        while runningT == True:
+            print(clear)
+            now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+            now = str(now)
+            print("           >--- "+Fore.LIGHTRED_EX+"O"+Fore.RED+"perative "+Fore.LIGHTRED_EX+"T"+Fore.RED+"ravel "+Fore.LIGHTRED_EX+"S"+Fore.RED+"ecurity System "+Style.RESET_ALL+"---< ("+Style.BRIGHT+"5.0"+Style.RESET_ALL+")"+Fore.RED)
+            print("                    OPERATION "+Fore.LIGHTRED_EX+OPERATION.upper()+Style.RESET_ALL)
+            print(MODE)
+            print("                    "+now)
+            print("                    TIME MODE ("+TTT+")")
+            if   ALPHA == True:
+                    print(Fore.LIGHTYELLOW_EX+"                    ALPHA ALPHA ALPHA"+Style.RESET_ALL)
+            elif ALPHA == False:
+                    print("")
+            timerNOW     = datetime.datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
+            timerNOW     = datetime.datetime.strptime(timerNOW, "%H:%M:%S, %m/%d/%Y")
+            DELTA        = timerNOW - timerSTART
+            if   TTT == "4 hours":
+                if DELTA.seconds >= 10800 and DELTA.seconds < 14400:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 14400:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif TTT == "3 hours":
+                if DELTA.seconds >= 7200 and DELTA.seconds < 10800:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 10800:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif TTT == "2 hours":
+                if DELTA.seconds >= 5400 and DELTA.seconds < 7200:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 7200:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif TTT == "1 hour":
+                if DELTA.seconds >= 2700 and DELTA.seconds < 3600:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 3600:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif TTT == "3 minutes (test)":
+                if DELTA.seconds >= 120 and DELTA.seconds < 180:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 180:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+            now = str(now)
+            if os.path.exists(REPORTTIME) == False:
+                report = open(REPORTTIME, 'w')
+                report.write(now + " TIME STARTED!")
+                report.close()
+            if DELTA < timeT:
+                emails   = True
+                messages = True
+                REACHED  = False
+                LoggedIn = False
+                while LoggedIn == False:
+                    now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                    now = str(now)
+                    try:
+                        mail = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+                        mail.login(fromaddr, pw)
+                        LoggedIn = True
+                    except (imaplib.IMAP4.error, imaplib.IMAP4.abort,ConnectionResetError):
+                        print(Fore.LIGHTRED_EX + "LOGIN FAILED" + Style.RESET_ALL)
+                        if os.path.exists("ERRORLOG.txt") == False:
+                                report = open("ERRORLOG.txt", 'w')
+                                report.write(now + " LOGINERROR")
+                                report.close()
+                        elif os.path.exists("ERRORLOG.txt") == True:
+                                report = open("ERRORLOG.txt", 'a')
+                                report.write("\n" + now + " LOGINERROR")
+                                report.close()
+                listloop = True
+                while listloop == True:
+                    try:
+                        mail.list()
+                        mail.select("inbox")
+                        listloop = False
+                    except:
+                        print("ERROR (mail.list)")
+                result, data   = mail.search(None, 'SUBJECT "[OTS]"')
+                result2, data2 = mail.search(None, 'FROM "noreply@findmespot.com"')
+                ids  = data[0]
+                ids2 = data2[0]
+                id_list  = ids.split()
+                id_list += ids2.split()
+                try:
+                        latest_email_id = id_list[-1]
+                        messages = True
+                except IndexError:
+                        now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                        now = str(now)
+                        print(clear)
+                        print("           >--- "+Fore.LIGHTRED_EX+"O"+Fore.RED+"perative "+Fore.LIGHTRED_EX+"T"+Fore.RED+"ravel "+Fore.LIGHTRED_EX+"S"+Fore.RED+"ecurity System "+Style.RESET_ALL+"---< ("+Style.BRIGHT+"5.0"+Style.RESET_ALL+")"+Fore.RED)
+                        print("                    OPERATION "+Fore.LIGHTRED_EX+OPERATION.upper()+Style.RESET_ALL)
+                        print()
+                        print("                    "+now)
+                        print("                    TIME MODE")
+                        print()
+                        messages     = False
+                        timerNOW     = datetime.datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
+                        timerNOW     = datetime.datetime.strptime(timerNOW, "%H:%M:%S, %m/%d/%Y")
+                        DELTA        = timerNOW - timerSTART
+                        if   TTT == "4 hours":
+                                if DELTA.seconds >= 10800 and DELTA.seconds < 14400:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 14400:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif TTT == "3 hours":
+                                if DELTA.seconds >= 7200 and DELTA.seconds < 10800:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 10800:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif TTT == "2 hours":
+                                if DELTA.seconds >= 5400 and DELTA.seconds < 7200:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 7200:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif TTT == "1 hour":
+                                if DELTA.seconds >= 2700 and DELTA.seconds < 3600:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 3600:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif TTT == "3 minutes (test)":
+                                if DELTA.seconds >= 120 and DELTA.seconds < 180:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 180:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        print("Waiting for Check-In (" + str(missedCount) + " missed)")
+                        time.sleep(1)
+                if messages == True:
+                    def empty_folder(m, do_expunge=True):
+                        print(Fore.LIGHTGREEN_EX + "CHECKED IN! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                        REACHED = True  #############################################################################################################
+                        m.select("inbox")  # select all trash
+                        m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                        if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                            m.expunge()  # not need if auto-expunge enabled
+                        else:
+                            print("Expunge was skipped.")
+                            return
+                    result, data = mail.fetch(latest_email_id, "RFC822")
+                    m = mailparser.parse_from_bytes(data[0][1])
+                    text = "From: "  # the Signature of emails sent by my phone. After that, anything is irrelevant
+                    entry = m.body.split(text, 1)[0]
+                    message = str(entry.upper())
+                    empty_folder(mail)
+                    now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                    now = str(now)
+                    if "CHECK" in message:
+                            timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                            timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                            if ALPHA == True:
+                                ALPHA = False
+                                if "(" in message and ")" in message:
+                                    coordinates = re.findall(regex,message)
+                                    coordinates = str(coordinates)
+                                else:
+                                    coordinates = "[no coordinates]"
+                                check = "Alpha End("+now+" "+coordinates+")"
+                                del last3check[0]
+                                last3check.append(check)
+                                gmail_send("CONFIRMATION","ALPHA END. "+str(last3check)+" -41")
+                            elif ALPHA == False:
+                                if "(" in message and ")" in message:
+                                    coordinates = re.findall(regex,message)
+                                    coordinates = str(coordinates)
+                                else:
+                                    coordinates = "[no coordinates]"
+                                check = "Check In("+now+" "+coordinates+")"
+                                del last3check[0]
+                                last3check.append(check)
+                                gmail_send("CONFIRMATION","CHECK IN CONFIRMED. "+str(last3check)+" -41") 
+                            if os.path.exists(REPORTTIME) == False:
+                                    report = open(REPORTTIME, 'w')
+                                    report.write(now + " CHECKED IN! "+coordinates)
+                                    report.close()
+                            elif os.path.exists(REPORTTIME) == True:
+                                    report = open(REPORTTIME, 'a')
+                                    report.write("\n" + now + " CHECKED IN! "+coordinates)
+                                    report.close()
+                            missedCount = 0
+                    elif "FLIGHT" in message:  # Flight Mode
+                        print(now + Fore.LIGHTRED_EX + " FLIGHT MODE ACTIVATED." + Style.RESET_ALL)
+                        if "(" in message and ")" in message:
+                            coordinates = re.findall(regex,message)
+                            coordinates = str(coordinates)
+                        else:
+                            coordinates = "[no coordinates]"
+                        check = "Flight Start("+now+" "+coordinates+")"
+                        del last3check[0]
+                        last3check.append(check)
+                        gmail_send("CONFIRMATION","FLIGHT MODE ACTIVATED. "+str(last3check)+" -41")
+                        time.sleep(0.1)
+                        message = client.messages.create(
+                                to     = OVERWATCH,
+                                from_  = 

@@ -54,6 +54,13 @@ twilio_token = "'"+twilio_token+"'"
 
 print(clear)
 
+print("SET YOUR PHONE NUMBER")
+time.sleep(1)
+your_phone = input("ENTER YOUR PHONE NUMBER: ")
+your_phone = "'"+your_phone+"'"
+
+print(clear)
+
 print("Feeding changes to OTS...")
 time.sleep(1)
 
@@ -69,6 +76,7 @@ replace("REPLACEME3",email_pw)
 replace("REPLACEME4",email_dest)
 replace("REPLACEME5",twilio_account)
 replace("REPLACEME6",twilio_token)
+replace("REPLACEME7",your_phone)
 
 print("ALL IS DONE!")
 time.sleep(1)
