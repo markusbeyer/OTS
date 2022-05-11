@@ -132,3 +132,70 @@ connection ="""
   -      C O N N E C T E D      -"""
 ################################################################################################################# OTS ######################################################################################################################
 #                                                                                                          F U N C T I O N S
+#define function to shortly flash the logo in the beginning of the program
+def bling():
+    print(Fore.RED + rise + Style.RESET_ALL)
+    time.sleep(0.01)
+    print(clear)
+    time.sleep(0.02)
+    print(Style.DIM + rise + Style.RESET_ALL)
+    time.sleep(0.01)
+    print(clear)
+    time.sleep(0.01)
+
+#defining internet connection checking function
+def check_connection():
+    url='http://www.google.com/'
+    timeout=5
+    checkloop = True
+    while checkloop == True:
+           try:
+                  server     = smtplib.SMTP('smtp.gmail.com', 587)
+                  _ = requests.get(url, timeout=timeout)
+                  print(clear +  Fore.LIGHTGREEN_EX)
+                  print(connection)
+                  time.sleep(0.5)
+                  print(""+Style.RESET_ALL)
+                  print(clear)
+                  checkloop = False
+           except requests.ConnectionError:
+                  print(clear + Fore.LIGHTRED_EX)
+                  print(noconnection)
+                  time.sleep(2)
+                  print(""+Style.RESET_ALL)
+                  print("ConnectionError.")
+                  input("Enter to try again...")
+           except smtplib.SMTPConnectError:
+                  print(clear + Fore.LIGHTRED_EX)
+                  print(noconnection)
+                  time.sleep(2)
+                  print(""+Style.RESET_ALL)
+                  print("SMTPConnectError.")
+                  input("Enter to try again...")
+
+#defining email function to confirm check-ins to operator
+def gmail_send(subject, message):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, pw)
+    msg            = EmailMessage()
+    message        = f'{message}\n'
+    msg.set_content(message)
+    msg['Subject'] = subject
+    msg['From']    = fromaddr
+    msg['To']      = destaddr
+    server.send_message(msg)
+
+#defining check in collection function, recording last 3 check ins
+def check_in():
+    run = True
+    while run == True:
+        if M41.upper() == "M":
+            del last3check[0]
+            last3check.append("Mcheck")
+        elif M41.upper() == "C":
+            del last3check[0]
+            last3check.append("Ccheck")
+
+############################################################################################### P R O G R A M        S T A R T #############################################################################################################
+check_connection()
