@@ -1165,4 +1165,337 @@ while OTS == True:
                                     empty_folder(mail)
                             message = client.messages.create(
                                     to     = OVERWATCH,
-                                    from_  = 
+                                    from_  = twilio_phone,
+                                    body   = "Greetings Sir. OTS switched to Checkpoint-Mode. - 41"
+                                    )
+                            if "(" in message and ")" in message:
+                                coordinates = re.findall(regex,message)
+                                coordinates = str(coordinates)
+                            else:
+                                coordinates = "[no coordinates]"
+                            check = "Switch Modes("+now+" "+coordinates+")"
+                            del last3check[0]
+                            last3check.append(check)
+                            gmail_send("CONFIRMATION","SWITCHED TO CHECK. "+str(last3check)+" -41")
+                            CHECKMODE = True
+                            TIMEMODE  = False
+                            runningT  = False
+                    elif "UP" in message:
+                            print("CONFIRMING THAT OTS IS RUNNING")
+                            time.sleep(1)
+                            if os.path.exists(REPORTTIME) == False:
+                                    report = open(REPORTTIME, 'w')
+                                    report.write(now + " UP COMMAND RECEIVED")
+                                    report.close()
+                            elif os.path.exists(REPORTTIME) == True:
+                                    report = open(REPORTTIME, 'a')
+                                    report.write("\n" + now + " UP COMMAND RECEIVED")
+                                    report.close()
+                                    empty_folder(mail)
+                            if "(" in message and ")" in message:
+                                coordinates = re.findall(regex,message)
+                                coordinates = str(coordinates)
+                            else:
+                                coordinates = "[no coordinates]"
+                            check = "Up("+now+" "+coordinates+")"
+                            del last3check[0]
+                            last3check.append(check)
+                            gmail_send("CONFIRMATION","UP IN TIME. "+str(last3check)+" -41")
+                            timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                            timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                            ALPHA          = False
+                            missedCount    = 0
+            elif DELTA >= timeT:
+                missedCount += 1
+                if os.path.exists(REPORTTIME) == False:
+                    report = open(REPORTTIME, 'w')
+                    report.write(now + " MISSED TIME-WINDOW! (" + str(missedCount) + " total)")
+                    report.close()
+                elif os.path.exists(REPORTTIME) == True:
+                    report = open(REPORTTIME, 'a')
+                    report.write("\n" + now + " MISSED TIME WINDOW! (" + str(missedCount) + " total)")
+                    report.close()
+                check = "MISSED CHECK("+now+")"
+                del last3check[0]
+                last3check.append(check)
+                gmail_send("NOTIFICATION","MISSED CHECK (TIME)"+str(last3check)+" -41")
+                #INFORM OVERWATCH
+                message = client.messages.create(
+                        to     = OVERWATCH,
+                        from_  = twilio_phone,
+                        body   = "OVERWATCH. Your Operator missed a time window. That's " + str(missedCount) + " in total Sir. It's up to you how to proceed.   - 41"
+                        )
+                def empty_folder(m, do_expunge=True):
+                            m.select("inbox")  # select all trash
+                            m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                            if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                                m.expunge()  # not need if auto-expunge enabled
+                            else:
+                                print("Expunge was skipped.")
+                                return
+                empty_folder(mail)
+                timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                if missedCount == 3:
+                        try:
+                                requests.get("http://127.0.0.1:8000/shutdown")
+                        except requests.exceptions.ConnectionError:
+                                pass
+                        os.startfile("protocols\\threemissed.lnk")
+                        time.sleep(1)
+                        call = client.calls.create(
+                                to= OVERWATCH,
+                                from_= twilio_phone,
+                                url=URL,
+                                method='GET'
+                                )
+                elif missedCount > 3:
+                        try:
+                                requests.get("http://127.0.0.1:8000/shutdown")
+                        except requests.exceptions.ConnectionError:
+                                pass
+                        os.startfile("protocols\\moremissed.lnk")
+                        time.sleep(1)
+                        call = client.calls.create(
+                                to= OVERWATCH,
+                                from_= twilio_phone,
+                                url=URL,
+                                method='GET'
+                                )
+        print(Fore.LIGHTGREEN_EX + "TIME RECORDING ENDED!" + Style.RESET_ALL)
+        report = open(REPORTTIME, 'a')
+        report.write("\n" + now + " TIME RECORDING ENDED!")
+        report.close()
+        if os.path.exists("REPORTS\\TIME1.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME1.txt")
+        elif os.path.exists("REPORTS\\TIME2.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME2.txt")
+        elif os.path.exists("REPORTS\\TIME3.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME3.txt")
+        elif os.path.exists("REPORTS\\TIME4.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME4.txt")
+        elif os.path.exists("REPORTS\\TIME5.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME5.txt")
+        elif os.path.exists("REPORTS\\TIME6.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME6.txt")
+        elif os.path.exists("REPORTS\\TIME7.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME7.txt")
+        elif os.path.exists("REPORTS\\TIME8.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME8.txt")
+        elif os.path.exists("REPORTS\\TIME9.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME9.txt")
+        elif os.path.exists("REPORTS\\TIME10.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME10.txt")
+        elif os.path.exists("REPORTS\\TIME11.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME11.txt")
+        elif os.path.exists("REPORTS\\TIME12.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME12.txt")
+        elif os.path.exists("REPORTS\\TIME13.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME13.txt")
+        elif os.path.exists("REPORTS\\TIME14.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME14.txt")
+        elif os.path.exists("REPORTS\\TIME15.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME15.txt")
+        elif os.path.exists("REPORTS\\TIME16.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME16.txt")
+        elif os.path.exists("REPORTS\\TIME17.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME17.txt")
+        elif os.path.exists("REPORTS\\TIME18.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME18.txt")
+        elif os.path.exists("REPORTS\\TIME19.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME19.txt")
+        elif os.path.exists("REPORTS\\TIME20.txt") == False:
+            os.rename(REPORTTIME, "REPORTS\\TIME20.txt")
+    elif CHECKMODE == True:################################################################################################################################################################################################# CHECKMODE
+        timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+        timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+        SWITCH = False
+        zcount = 0
+        for i in CHECKPOINTS:
+            if os.path.exists(REPORTCHECK) == False:
+                report = open(REPORTCHECK, 'w')
+                report.write(now + " TRIP STARTED!")
+                report.close()
+            if i in open(REPORTCHECK).read():
+                continue
+            time.sleep(0.5)
+            now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+            now = str(now)
+            print(clear)
+            print("           >--- "+Fore.LIGHTRED_EX+"O"+Fore.RED+"perative "+Fore.LIGHTRED_EX+"T"+Fore.RED+"ravel "+Fore.LIGHTRED_EX+"S"+Fore.RED+"ecurity System "+Style.RESET_ALL+"---< ("+Style.BRIGHT+"5.0"+Style.RESET_ALL+")"+Fore.RED)
+            print("                    OPERATION "+Fore.LIGHTRED_EX+OPERATION.upper()+Style.RESET_ALL)
+            print(MODE)
+            print("                    "+now)
+            print("                    CHECKPOINT MODE ("+CCC+")")
+            timerNOW     = datetime.datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
+            timerNOW     = datetime.datetime.strptime(timerNOW, "%H:%M:%S, %m/%d/%Y")
+            DELTA = timerNOW - timerSTART
+            if   CCC == "4 hours":
+                if DELTA.seconds >= 10800 and DELTA.seconds < 14400:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 14400:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif CCC == "3 hours":
+                if DELTA.seconds >= 7200 and DELTA.seconds < 10800:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 10800:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif CCC == "2 hours":
+                if DELTA.seconds >= 5400 and DELTA.seconds < 7200:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 7200:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif CCC == "1 hour":
+                if DELTA.seconds >= 2700 and DELTA.seconds < 3600:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 3600:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            elif CCC == "3 minutes (test)":
+                if DELTA.seconds >= 120 and DELTA.seconds < 180:
+                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                elif DELTA.seconds >= 180:
+                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                else:
+                    print("Passed time: "+str(DELTA))
+            print("Waiting for Checkpoint " + i + " (" + str(missedCount) + " missed)")
+            time.sleep(1)
+            if i not in open(REPORTCHECK).read():
+                runningC = True
+                SWITCH   = False
+                while runningC == True:
+                    emails = True
+                    messages = True
+                    LoggedIn = False
+                    while LoggedIn == False:
+                        now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                        now = str(now)
+                        try:
+                            mail = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+                            mail.login(fromaddr, pw)
+                            LoggedIn = True
+                        except (imaplib.IMAP4.error, imaplib.IMAP4.abort,ConnectionResetError):
+                            print(Fore.LIGHTRED_EX + "LOGIN FAILED" + Style.RESET_ALL)
+                            if os.path.exists("ERRORLOG.txt") == False:
+                                    report = open("ERRORLOG.txt", 'w')
+                                    report.write(now + " LOGINERROR")
+                                    report.close()
+                            elif os.path.exists("ERRORLOG.txt") == True:
+                                    report = open("ERRORLOG.txt", 'a')
+                                    report.write("\n" + now + " LOGINERROR")
+                                    report.close()
+                    listloop = True
+                    while listloop == True:
+                        try:
+                            mail.list()
+                            mail.select("inbox")
+                            listloop = False
+                        except:
+                            print("ERROR (mail.list)")
+                    result, data   = mail.search(None, 'SUBJECT "[OTS]"')
+                    result2, data2 = mail.search(None, 'FROM "noreply@findmespot.com"')
+                    ids  = data[0]
+                    ids2 = data2[0]
+                    id_list  = ids.split()
+                    id_list += ids2.split()
+                    try:
+                        latest_email_id = id_list[-1]
+                        messages = True
+                    except IndexError:
+                        now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                        now = str(now)
+                        print(clear)
+                        print("           >--- "+Fore.LIGHTRED_EX+"O"+Fore.RED+"perative "+Fore.LIGHTRED_EX+"T"+Fore.RED+"ravel "+Fore.LIGHTRED_EX+"S"+Fore.RED+"ecurity System "+Style.RESET_ALL+"---< ("+Style.BRIGHT+"5.0"+Style.RESET_ALL+")"+Fore.RED)
+                        print("                    OPERATION "+Fore.LIGHTRED_EX+OPERATION.upper()+Style.RESET_ALL)
+                        print()
+                        print("                    "+now)
+                        print("                    CHECKPOINT MODE")
+                        zcount += 1
+                        if ALPHA == True and zcount == 2:
+                            print(Fore.LIGHTYELLOW_EX+"                    ALPHA ALPHA ALPHA"+Style.RESET_ALL)
+                            zcount = 0
+                        elif ALPHA == False:
+                            print("")
+                        if zcount >= 2:
+                            zcount = 0
+                        messages     = False
+                        timerNOW     = datetime.datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
+                        timerNOW     = datetime.datetime.strptime(timerNOW, "%H:%M:%S, %m/%d/%Y")
+                        DELTA        = timerNOW - timerSTART
+                        if   CCC == "4 hours":
+                                if DELTA.seconds >= 10800 and DELTA.seconds < 14400:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 14400:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif CCC == "3 hours":
+                                if DELTA.seconds >= 7200 and DELTA.seconds < 10800:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 10800:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif CCC == "2 hours":
+                                if DELTA.seconds >= 5400 and DELTA.seconds < 7200:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 7200:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif CCC == "1 hour":
+                                if DELTA.seconds >= 2700 and DELTA.seconds < 3600:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 3600:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        elif CCC == "3 minutes (test)":
+                                if DELTA.seconds >= 120 and DELTA.seconds < 180:
+                                    print("Passed time: "+Fore.LIGHTYELLOW_EX+str(DELTA)+Style.RESET_ALL)
+                                elif DELTA.seconds >= 180:
+                                    print("Passed time: "+Fore.LIGHTRED_EX+str(DELTA)+Style.RESET_ALL)
+                                else:
+                                    print("Passed time: "+str(DELTA))
+                        print("Waiting for Checkpoint " + i + " (" + str(missedCount) + " missed)")
+                        time.sleep(1)
+                        if DELTA >= timeC:  
+                            missedCount += 1
+                            if os.path.exists(REPORTCHECK) == False:
+                                report = open(REPORTCHECK, 'w')
+                                report.write(now + " MISSED CHECKPOINT " + i + " !")
+                                report.close()
+                            elif os.path.exists(REPORTCHECK) == True:
+                                report = open(REPORTCHECK, 'a')
+                                report.write("\n" + now + " MISSED CHECKPOINT " + i + " !")
+                                report.close()
+                            if missedCount == 3:
+                                try:
+                                    requests.get("http://127.0.0.1:8000/shutdown")
+                                except requests.exceptions.ConnectionError:
+                                    pass
+                                os.startfile("protocols\\threemissed.lnk")
+                                time.sleep(1)
+                                call = client.calls.create(
+                                    to= OVERWATCH,
+                                    from_= twilio_phone,
+                                    url=URL,
+                                    method='GET'
+                                    )
+                            elif missedCount > 3:
+                                try:
+                                    requests.get("http://127.0.0.1:8000/shutdown")
+                                except requests.exceptions.ConnectionError:
+                                    pass
+                                os.startfile("protocols\\moremissed.lnk")
+                                time.sleep(1)
+                                call = client.calls.create(
+                                    to= OVERWATCH,
+                                    from_= 
