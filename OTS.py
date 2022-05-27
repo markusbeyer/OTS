@@ -1055,4 +1055,114 @@ while OTS == True:
                                                 call = client.calls.create(
                                                         to=COPS, 
                                                         from_= twilio_phone,
-                                                        
+                                                        url=URL,
+                                                        method='GET'
+                                                        )
+                                                call = client.calls.create(
+                                                        to=FOROFF, 
+                                                        from_= twilio_phone,
+                                                        url=URL,
+                                                        method='GET'
+                                                        )
+                                                #INFORM OVERWATCH
+                                                message = client.messages.create(
+                                                        to     = OVERWATCH,
+                                                        from_  = twilio_phone,
+                                                        body   = """Overwatch. The F-Protocol has been activated. \nBe aware, that authorities are being called and briefed at this moment, leading them to you for further Details. Give them the F-Package. It's everything we have: Planned Route, Subject Files, OTS Reports, Operation Documents. The Password is """+Fpassword+""". All together.  -41 """
+                                                        )
+                                                if os.path.exists(REPORTTIME) == False:
+                                                        report = open(REPORTTIME, 'w')
+                                                        report.write(now + " F-PROTOCOL CONFIRMED!!!")
+                                                        report.close()
+                                                elif os.path.exists(REPORTTIME) == True:
+                                                        report = open(REPORTTIME, 'a')
+                                                        report.write("\n" + now + " F-PROTOCOL CONFIRMED!!!")
+                                                        report.close()
+                                                        empty_folder(mail)
+                                                pending = False
+                                                endless = True
+                                                while endless == True:
+                                                    print(clear)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                    time.sleep(1)
+                                                    print(clear)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                    print("")
+                                                    time.sleep(1)############################################################################################################################################################# E  N  D  !!!
+                                        else:
+                                                print(Fore.LIGHTRED_EX + "F-PROTOCOL INITIALIZATION FAILED" + Style.RESET_ALL)
+                                                if os.path.exists("ERRORLOG.txt") == False:
+                                                    report = open("ERRORLOG.txt", 'w')
+                                                    report.write(now + " F-INIT ERROR")
+                                                    report.close()
+                                                elif os.path.exists("ERRORLOG.txt") == True:
+                                                    report = open("ERRORLOG.txt", 'a')
+                                                    report.write("\n" + now + " F-INIT ERROR")
+                                                    report.close()
+                    elif "SWITCH" in message:
+                            print("SWITCHING MODES")
+                            time.sleep(1)
+                            missedCount = 0
+                            if os.path.exists(REPORTTIME) == False:
+                                    report = open(REPORTTIME, 'w')
+                                    report.write(now + " SWITCHING MODES")
+                                    report.close()
+                            elif os.path.exists(REPORTTIME) == True:
+                                    report = open(REPORTTIME, 'a')
+                                    report.write("\n" + now + " SWITCHING MODES")
+                                    report.close()
+                                    empty_folder(mail)
+                            message = client.messages.create(
+                                    to     = OVERWATCH,
+                                    from_  = 
