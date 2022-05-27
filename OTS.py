@@ -852,4 +852,207 @@ while OTS == True:
                                                         empty_folder(mail)
                                                 message = client.messages.create(
                                                 to     = OVERWATCH,
-                                                from_  = 
+                                                from_  = twilio_phone,
+                                                body   = "OVERWATCH. Your Operator just ended Flight Mode.   -41"
+                                                )
+                                                timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                                                timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                                                pending = False
+                                        else:
+                                                print(Fore.LIGHTRED_EX + "FLIGHT MODE ENDING FAILED" + Style.RESET_ALL)
+                                                if os.path.exists("ERRORLOG.txt") == False:
+                                                    report = open("ERRORLOG.txt", 'w')
+                                                    report.write(now + " F-INIT ERROR")
+                                                    report.close()
+                                                elif os.path.exists("ERRORLOG.txt") == True:
+                                                    report = open("ERRORLOG.txt", 'a')
+                                                    report.write("\n" + now + " F-INIT ERROR")
+                                                    report.close()
+                    elif "ALPHA" in message:
+                        ALPHA = True
+                        try:
+                                requests.get("http://127.0.0.1:8000/shutdown")
+                        except requests.exceptions.ConnectionError:
+                                pass
+                        os.startfile("protocols\\ALPHA.lnk")
+                        time.sleep(1)
+                        call = client.calls.create(
+                                to= OVERWATCH,
+                                from_= twilio_phone,
+                                url=URL,
+                                method='GET'
+                                )
+                        message = client.messages.create(
+                                to     = OVERWATCH,
+                                from_  = twilio_phone,
+                                body   = "Good day sir. Your Operator just used the ALPHA command, something seems to be indicating danger. Be ready.  -41"
+                                )
+                        #DONE
+                        if os.path.exists(REPORTTIME) == False:
+                                report = open(REPORTTIME, 'w')
+                                report.write(now + " ALPHA COMMAND RECEIVED")
+                                report.close()
+                        elif os.path.exists(REPORTTIME) == True:
+                                report = open(REPORTTIME, 'a')
+                                report.write("\n" + now + " ALPHA COMMAND RECEIVED")
+                                report.close()
+                                empty_folder(mail)
+                        missedCount = 0
+                        if "(" in message and ")" in message:
+                            coordinates = re.findall(regex,message)
+                            coordinates = str(coordinates)
+                        else:
+                            coordinates = "[no coordinates]"
+                        check = "Alpha Start("+now+" "+coordinates+")"
+                        del last3check[0]
+                        last3check.append(check)
+                        gmail_send("CONFIRMATION","ALPHA CONFIRMED. "+str(last3check)+" -41")
+                    elif "HOTEL" in message or "INITIALIZE" in message:  # [!]  F - PROTOCOL  [!]
+                        print(now + Fore.LIGHTRED_EX + " F-PROTOCOL REQUESTED!" + Style.RESET_ALL)
+                        if "(" in message and ")" in message:
+                            coordinates = re.findall(regex,message)
+                            coordinates = str(coordinates)
+                        else:
+                            coordinates = "[no coordinates]"
+                        check = "F-Protocol Request("+now+" "+coordinates+")"
+                        del last3check[0]
+                        last3check.append(check)
+                        time.sleep(0.1)
+                        if os.path.exists(REPORTTIME) == False:
+                                report = open(REPORTTIME, 'w')
+                                report.write(now + " HOTEL COMMAND RECEIVED")
+                                report.close()
+                        elif os.path.exists(REPORTTIME) == True:
+                                report = open(REPORTTIME, 'a')
+                                report.write("\n" + now + " HOTEL COMMAND RECEIVED")
+                                report.close()
+                                empty_folder(mail)
+                        pending = True
+                        try:
+                                requests.get("http://127.0.0.1:8000/shutdown")
+                        except requests.exceptions.ConnectionError:
+                                pass
+                        os.startfile("protocols\\HOTEL.lnk")
+                        time.sleep(1)
+                        call = client.calls.create(
+                                to= OVERWATCH,
+                                from_= twilio_phone,
+                                url=URL,
+                                method='GET'
+                                )
+                        message = client.messages.create(
+                                to     = OVERWATCH,
+                                from_  = twilio_phone,
+                                body   = "Attention. The F-Protocol has been requested. You being the Overwatch have to decide wether to initiate or to abort. Be aware that once confirmed, the Protocol can not be stopped and authorities will be contacted. Your choice Sir.   -41"
+                                )
+                        if os.path.exists(REPORTTIME) == False:
+                                report = open(REPORTTIME, 'w')
+                                report.write(now + " F-PROTOCOL REQUESTED!")
+                                report.close()
+                        elif os.path.exists(REPORTTIME) == True:
+                                report = open(REPORTTIME, 'a')
+                                report.write("\n" + now + " F-PROTOCOL REQUESTED!")
+                                report.close()
+                        empty_folder(mail)
+                        while pending == True:
+                                now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                                now = str(now)
+                                print(clear)
+                                print(Fore.LIGHTRED_EX+"               !!!-       F-PROTOCOL INITIATED       -!!!"+Style.RESET_ALL)
+                                print(Fore.YELLOW     +"               Pending for confirmation from Overwatch..."+Style.RESET_ALL)
+                                LoggedIn = False
+                                while LoggedIn == False:
+                                    now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                                    now = str(now)
+                                    try:
+                                        mail = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+                                        mail.login(fromaddr, pw)
+                                        LoggedIn = True
+                                    except (imaplib.IMAP4.error, imaplib.IMAP4.abort):
+                                        print("LOGIN FAILED")
+                                        if os.path.exists("ERRORLOG.txt") == False:
+                                            report = open("ERRORLOG.txt", 'w')
+                                            report.write(now + " LOGINERROR")
+                                            report.close()
+                                        elif os.path.exists("ERRORLOG.txt") == True:
+                                            report = open("ERRORLOG.txt", 'a')
+                                            report.write("\n" + now + " LOGINERROR")
+                                            report.close()
+                                listloop = True
+                                while listloop == True:
+                                    try:
+                                        mail.list()
+                                        mail.select("inbox")
+                                        listloop = False
+                                    except:
+                                        print("ERROR (mail.list)")
+                                result, data   = mail.search(None, 'SUBJECT "[OTS]"')
+                                result2, data2 = mail.search(None, 'FROM "noreply@findmespot.com"')
+                                ids  = data[0]
+                                ids2 = data2[0]
+                                id_list  = ids.split()
+                                id_list += ids2.split()
+                                noemails = True
+                                try:
+                                        latest_email_id = id_list[-1]
+                                        noemails = False
+                                except IndexError:
+                                        print()
+                                        print("               WAITING FOR CONFIRMATION SINCE " + str(timerNOW))
+                                        noemails = True
+                                        time.sleep(1)
+                                        print(clear)
+                                if noemails == False:
+                                        def empty_folder(m, do_expunge=True):
+                                                print(Fore.LIGHTGREEN_EX + "CHECKED IN! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                                                m.select("inbox")  # select all trash
+                                                m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                                                if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                                                        m.expunge()  # not need if auto-expunge enabled
+                                                else:
+                                                        print("Expunge was skipped.")
+                                                        return
+                                        result, data = mail.fetch(latest_email_id,"RFC822")
+                                        m = mailparser.parse_from_bytes(data[0][1])
+                                        text = "From: " #the Signature of emails sent by my phone. After that, anything is irrelevant
+                                        entry = m.body.split(text, 1)[0]
+                                        message = entry.upper()
+                                        empty_folder(mail)
+                                        if "ABORT" in message or "CHECK" in message:
+                                                if "(" in message and ")" in message:
+                                                    coordinates = re.findall(regex,message)
+                                                    coordinates = str(coordinates)
+                                                else:
+                                                    coordinates = "[no coordinates]"
+                                                check = "F-Protocol Abort ("+now+")"
+                                                del last3check[0]
+                                                last3check.append(check)
+                                                gmail_send("ATTENTION","F-PROTOCOL REQUEST ABORTED. "+str(last3check)+" -41")
+                                                if os.path.exists(REPORTTIME) == False:
+                                                        report = open(REPORTTIME, 'w')
+                                                        report.write(now + " F-PROTOCOL ABORTED.")
+                                                        report.close()
+                                                elif os.path.exists(REPORTTIME) == True:
+                                                        report = open(REPORTTIME, 'a')
+                                                        report.write("\n" + now + " F-PROTOCOL ABORTED.")
+                                                        report.close()
+                                                        empty_folder(mail)
+                                                timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                                                timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                                                pending = False
+                                        elif "CONFIRM" in message:#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                print(clear)#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                print("Initiating F-Protocol...")#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!    C A L L I N G      A U T H O R I T I E S   ! ! !      #!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#
+                                                try:#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                        requests.get("http://127.0.0.1:8000/shutdown")#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                except requests.exceptions.ConnectionError:
+                                                        pass
+                                                check = "F-Protocol Confirm("+now+")"
+                                                del last3check[0]
+                                                last3check.append(check)
+                                                os.startfile("protocols\\FOXTROT.lnk")
+                                                time.sleep(1)
+                                                call = client.calls.create(
+                                                        to=COPS, 
+                                                        from_= twilio_phone,
+                                                        
