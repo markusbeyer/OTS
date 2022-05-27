@@ -1498,4 +1498,409 @@ while OTS == True:
                                 time.sleep(1)
                                 call = client.calls.create(
                                     to= OVERWATCH,
-                                    from_= 
+                                    from_= twilio_phone,
+                                    url=URL,
+                                    method='GET'
+                                    )
+                            #INFORM OVERWATCH
+                            message = client.messages.create(
+                                    to     = OVERWATCH,
+                                    from_  = twilio_phone,
+                                    body   = "OVERWATCH. Your Operator missed a time window. That's " + str(missedCount) + " in total Sir. It's up to you how to proceed.   - 41"
+                                    )
+                            timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                            timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                            print(Fore.LIGHTGREEN_EX + "MISSED CHECKPOINT " + i + "! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                            timer = 0
+                            runningC = False
+                    if messages == True:
+                        def empty_folder(m, do_expunge=True):
+                            m.select("inbox")  # select all trash
+                            m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                            if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                                m.expunge()  # not need if auto-expunge enabled
+                            else:
+                                print("Expunge was skipped.")
+                                return
+                        result, data = mail.fetch(latest_email_id, "RFC822")
+                        m = mailparser.parse_from_bytes(data[0][1])
+                        text = "From: "  # the Signature of emails sent by my phone. After that, anything is irrelevant
+                        entry = m.body.split(text, 1)[0]
+                        message = entry.upper()
+                        empty_folder(mail)
+                        #if i in message:
+                        #        timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                        #        timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                        #        print(Fore.LIGHTGREEN_EX + "REACHED CHECKPOINT " + i + "! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)                           <-- Whats all this???
+                        #        ALPHA = False
+                        #        if os.path.exists(REPORTCHECK) == False:
+                        #                report = open(REPORTCHECK, 'w')
+                        #                report.write(now + " REACHED CHECKPOINT " + i)
+                        #                report.close()
+                        #        elif os.path.exists(REPORTCHECK) == True:
+                        #                report = open(REPORTCHECK, 'a')
+                        #                report.write("\n" + now + " REACHED CHECKPOINT " + i)
+                        #                report.close()
+                        #        runningC = False
+                        if "CHECK" in message:
+                                missedCount    = 0
+                                timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                                timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                                print(Fore.LIGHTGREEN_EX + "REACHED CHECKPOINT " + i + "! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                                if os.path.exists(REPORTCHECK) == False:
+                                        report = open(REPORTCHECK, 'w')
+                                        report.write(now + " REACHED CHECKPOINT " + i)
+                                        report.close()
+                                elif os.path.exists(REPORTCHECK) == True:
+                                        report = open(REPORTCHECK, 'a')
+                                        report.write("\n" + now + " REACHED CHECKPOINT " + i)
+                                        report.close()
+                                if ALPHA == True:
+                                    ALPHA = False
+                                    check = "Alpha End. Reached "+i+"("+now+")"
+                                    del last3check[0]
+                                    last3check.append(check)
+                                    gmail_send("CONFIRMATION","ALPHA END. REACHED "+i+" "+str(last3check)+" -41")
+                                elif ALPHA == False:
+                                    check = "Reached "+i+"("+now+")"
+                                    del last3check[0]
+                                    last3check.append(check)
+                                    gmail_send("CONFIRMATION","REACHED "+i+" "+str(last3check)+" -41")
+                                runningC = False
+                        elif "ALPHA" in message:
+                                #INFORM OVERWATCH
+                                ALPHA = True
+                                try:
+                                        requests.get("http://127.0.0.1:8000/shutdown")
+                                except requests.exceptions.ConnectionError:
+                                        pass
+                                os.startfile("protocols\\ALPHA.lnk")
+                                time.sleep(1)
+                                call = client.calls.create(
+                                        to= OVERWATCH,
+                                        from_= twilio_phone,
+                                        url=URL,
+                                        method='GET'
+                                        )
+                                message = client.messages.create(
+                                        to     = OVERWATCH,
+                                        from_  = twilio_phone,
+                                        body   = "Good day sir. Your Operator just used the ALPHA command, something seems to be indicating danger. Be ready.  -41"
+                                        )
+                                if os.path.exists(REPORTCHECK) == False:
+                                        report = open(REPORTCHECK, 'w')
+                                        report.write(now + " ALPHA COMMAND RECEIVED")
+                                        report.close()
+                                elif os.path.exists(REPORTCHECK) == True:
+                                        report = open(REPORTCHECK, 'a')
+                                        report.write("\n" + now + " ALPHA COMMAND RECEIVED")
+                                        report.close()
+                                        empty_folder(mail)
+                                check = "Alpha Start("+now+")"
+                                del last3check[0]
+                                last3check.append(check)
+                                gmail_send("CONFIRMATION","ALPHA CONFIRMED. "+str(last3check)+" -41")
+                        elif "HOTEL" in message or "INITIALIZE" in message:  # [!]  F - PROTOCOL  [!]
+                                print(now + Fore.LIGHTRED_EX + " F-PROTOCOL REQUESTED!" + Style.RESET_ALL)
+                                check = "F-Protocol Requested("+now+")"
+                                del last3check[0]
+                                last3check.append(check)
+                                time.sleep(0.1)
+                                if os.path.exists(REPORTCHECK) == False:
+                                        report = open(REPORTCHECK, 'w')
+                                        report.write(now + " HOTEL COMMAND RECEIVED")
+                                        report.close()
+                                elif os.path.exists(REPORTCHECK) == True:
+                                        report = open(REPORTCHECK, 'a')
+                                        report.write("\n" + now + " HOTEL COMMAND RECEIVED")
+                                        report.close()
+                                        empty_folder(mail)
+                                        pending = True
+                                        try:
+                                                requests.get("http://127.0.0.1:8000/shutdown")
+                                        except requests.exceptions.ConnectionError:
+                                                pass
+                                        os.startfile("protocols\\HOTEL.lnk")
+                                        time.sleep(1)
+                                        call = client.calls.create(
+                                                to= OVERWATCH,
+                                                from_= twilio_phone,
+                                                url=URL,
+                                                method='GET'
+                                                )
+                                        message = client.messages.create(
+                                                to     = OVERWATCH,
+                                                from_  = twilio_phone,
+                                                body   = "Attention. The F-Protocol has been requested. You being the Overwatch have to decide wether to initiate or to abort. Be aware that once confirmed, the Protocol can not be stopped and authorities will be contacted. Your choice Sir.   -41"
+                                                )
+                                        if os.path.exists(REPORTCHECK) == False:
+                                                report = open(REPORTCHECK, 'w')
+                                                report.write(now + " F-PROTOCOL REQUESTED!")
+                                                report.close()
+                                        elif os.path.exists(REPORTCHECK) == True:
+                                                report = open(REPORTCHECK, 'a')
+                                                report.write("\n" + now + " F-PROTOCOL REQUESTED!")
+                                                report.close()
+                                        while pending == True:
+                                                now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                                                now = str(now)
+                                                print(clear)
+                                                print(Fore.LIGHTRED_EX+"               !!!-       F-PROTOCOL INITIATED       -!!!"+Style.RESET_ALL)
+                                                print(Fore.YELLOW     +"               Pending for confirmation from Overwatch..."+Style.RESET_ALL)
+                                                mail = imaplib.IMAP4_SSL('imap.gmail.com',993)
+                                                mail.login(fromaddr,pw)
+                                                listloop = True
+                                                while listloop == True:
+                                                    try:
+                                                        mail.list()
+                                                        mail.select("inbox")
+                                                        listloop = False
+                                                    except:
+                                                        print("ERROR (mail.list)")
+                                                result, data   = mail.search(None, 'SUBJECT "[OTS]"')
+                                                result2, data2 = mail.search(None, 'FROM "noreply@findmespot.com"')
+                                                ids  = data[0]
+                                                ids2 = data2[0]
+                                                id_list  = ids.split()
+                                                id_list += ids2.split()
+                                                noemails = True
+                                                try:
+                                                        latest_email_id = id_list[-1]
+                                                        noemails = False
+                                                except IndexError:
+                                                        print()
+                                                        print("               WAITING FOR CONFIRMATION SINCE " + str(timerNOW))
+                                                        noemails = True
+                                                        time.sleep(1)
+                                                        print(clear)
+                                                if noemails == False:
+                                                        def empty_folder(m, do_expunge=True):
+                                                                print(Fore.LIGHTGREEN_EX + "CHECKED IN! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                                                                m.select("inbox")  # select all trash
+                                                                m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                                                                if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                                                                        m.expunge()  # not need if auto-expunge enabled
+                                                                else:
+                                                                        print("Expunge was skipped.")
+                                                                        return
+                                                        result, data = mail.fetch(latest_email_id,"RFC822")
+                                                        m = mailparser.parse_from_bytes(data[0][1])
+                                                        text = "From: " #the Signature of emails sent by my phone. After that, anything is irrelevant
+                                                        entry = m.body.split(text, 1)[0]
+                                                        message = entry.upper()
+                                                        empty_folder(mail)
+                                                        if "ABORT" in message or "CHECK" in message:
+                                                                check = "F-Protocol Aborted("+now+")"
+                                                                del last3check[0]
+                                                                last3check.append(check)
+                                                                gmail_send("ATTENTION","F-PROTOCOL ABORTED. ("+now+") -41")
+                                                                if os.path.exists(REPORTCHECK) == False:
+                                                                        report = open(REPORTCHECK, 'w')
+                                                                        report.write(now + " F-PROTOCOL ABORTED.")
+                                                                        report.close()
+                                                                elif os.path.exists(REPORTCHECK) == True:
+                                                                        report = open(REPORTCHECK, 'a')
+                                                                        report.write("\n" + now + " F-PROTOCOL ABORTED.")
+                                                                        report.close()
+                                                                        empty_folder(mail)
+                                                                timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                                                                timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                                                                pending = False
+                                                        elif "CONFIRM" in message:#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                                print(clear)#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                                print("Initiating F-Protocol...")#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!    C A L L I N G      A U T H O R I T I E S   ! ! !      #!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#
+                                                                try:#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                                        requests.get("http://127.0.0.1:8000/shutdown")#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+                                                                except requests.exceptions.ConnectionError:
+                                                                        pass
+                                                                os.startfile("protocols\\FOXTROT.lnk")
+                                                                time.sleep(1)
+                                                                call = client.calls.create(
+                                                                        to= COPS, 
+                                                                        from_= twilio_phone,
+                                                                        url=URL,
+                                                                        method='GET'
+                                                                        )
+                                                                call = client.calls.create(
+                                                                        to= FOROFF, 
+                                                                        from_= twilio_phone,
+                                                                        url=URL,
+                                                                        method='GET'
+                                                                        )
+                                                                #INFORM OVERWATCH
+                                                                message = client.messages.create(
+                                                                        to     = OVERWATCH,
+                                                                        from_  = twilio_phone,
+                                                                        body   = """Overwatch. The F-Protocol has been activated. Be aware, that authorities are being called and briefed at this moment, leading them to you for further Details. Give them the F-Package. It's everything we have: Planned Route, Subject Files, OTS Reports, Operation Documents. The Password is """+Fpassword+""".  -41 """
+                                                                        )
+                                                                if os.path.exists(REPORTCHECK) == False:
+                                                                        report = open(REPORTCHECK, 'w')
+                                                                        report.write(now + " F-PROTOCOL CONFIRMED!!!")
+                                                                        report.close()
+                                                                elif os.path.exists(REPORTCHECK) == True:
+                                                                        report = open(REPORTCHECK, 'a')
+                                                                        report.write("\n" + now + " F-PROTOCOL CONFIRMED!!!")
+                                                                        report.close()
+                                                                        empty_folder(mail)
+                                                                pending = False
+                                                                endless = True
+                                                                while endless == True:
+                                                                    print(clear)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print(Fore.LIGHTRED_EX+"!!!  F-PROTOCOL ACTIVATED  !!!"+Style.RESET_ALL)
+                                                                    time.sleep(1)
+                                                                    print(clear)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    print("")
+                                                                    print(Fore.RED        +"     Operator compromised     "+Style.RESET_ALL)
+                                                                    time.sleep(1)############################################################################################################################################################# E  N  D  !!!
+                                                        else:
+                                                                print(Fore.LIGHTRED_EX + "F-PROTOCOL INITIALIZATION FAILED" + Style.RESET_ALL)
+                                                                if os.path.exists("ERRORLOG.txt") == False:
+                                                                    report = open("ERRORLOG.txt", 'w')
+                                                                    report.write(now + " F-INIT ERROR")
+                                                                    report.close()
+                                                                elif os.path.exists("ERRORLOG.txt") == True:
+                                                                    report = open("ERRORLOG.txt", 'a')
+                                                                    report.write("\n" + now + " F-INIT ERROR")
+                                                                    report.close()
+                        elif "SWITCH" in message:
+                            print("SWITCHING MODES")
+                            time.sleep(1)
+                            missedCount = 0
+                            if os.path.exists(REPORTCHECK) == False:
+                                    report = open(REPORTCHECK, 'w')
+                                    report.write(now + " SWITCHING MODES")
+                                    report.close()
+                            elif os.path.exists(REPORTCHECK) == True:
+                                    report = open(REPORTCHECK, 'a')
+                                    report.write("\n" + now + " SWITCHING MODES")
+                                    report.close()
+                                    empty_folder(mail)
+                            message = client.messages.create(
+                                    to     = OVERWATCH,
+                                    from_  = twilio_phone,
+                                    body   = "Greetings Sir. OTS switched to Time-Mode. - 41"                                      
+                                    )
+                            check = "Switch Modes("+now+")"
+                            del last3check[0]
+                            last3check.append(check)
+                            gmail_send("CONFIRMATION","SWITCHED TO TIME. LAST CHECKPOINT "+i+" "+str(last3check)+" -41")
+                            SWITCH = True
+                            runningC = False
+                        elif "UP" in message:
+                            print("CONFIRMING THAT OTS IS RUNNING")
+                            time.sleep(1)
+                            if os.path.exists(REPORTCHECK) == False:
+                                    report = open(REPORTCHECK, 'w')
+                                    report.write(now + " UP COMMAND RECEIVED")
+                                    report.close()
+                            elif os.path.exists(REPORTCHECK) == True:
+                                    report = open(REPORTCHECK, 'a')
+                                    report.write("\n" + now + " UP COMMAND RECEIVED")
+                                    report.close()
+                                    empty_folder(mail)
+                            check = "Up("+now+")"
+                            del last3check[0]
+                            last3check.append(check)
+                            gmail_send("CONFIRMATION","UP IN CHECK. STANDBY FOR CHECKPOINT "+i+" "+str(last3check)+" -41")
+                            timerSTART     = datetime.datetime.today().strftime("%H:%M:%S | %m/%d/%Y")
+                            timerSTART     = datetime.datetime.strptime(timerSTART, "%H:%M:%S | %m/%d/%Y")
+                            ALPHA          = False
+                            missedCount    = 0
+                if SWITCH == True:
+                        break
+        print(Fore.LIGHTGREEN_EX + "ALL CHECKPOINTS REACHED!" + Style.RESET_ALL)
+        report = open(REPORTCHECK,'a')
+        report.write("\n TRIP ENDED!")
+        report.close()
+        if   os.path.exists("REPORTS\\TRIP1.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP1.txt")
+        elif os.path.exists("REPORTS\\TRIP2.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP2.txt")
+        elif os.path.exists("REPORTS\\TRIP3.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP3.txt")
+        elif os.path.exists("REPORTS\\TRIP4.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP4.txt")
+        elif os.path.exists("REPORTS\\TRIP5.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP5.txt")
+        elif os.path.exists("REPORTS\\TRIP6.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP6.txt")
+        elif os.path.exists("REPORTS\\TRIP7.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP7.txt")
+        elif os.path.exists("REPORTS\\TRIP8.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP8.txt")
+        elif os.path.exists("REPORTS\\TRIP9.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP9.txt")
+        elif os.path.exists("REPORTS\\TRIP10.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP10.txt")
+        elif os.path.exists("REPORTS\\TRIP11.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP11.txt")
+        elif os.path.exists("REPORTS\\TRIP12.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP12.txt")
+        elif os.path.exists("REPORTS\\TRIP13.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP13.txt")
+        elif os.path.exists("REPORTS\\TRIP14.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP14.txt")
+        elif os.path.exists("REPORTS\\TRIP15.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP15.txt")
+        elif os.path.exists("REPORTS\\TRIP16.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP16.txt")
+        elif os.path.exists("REPORTS\\TRIP17.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP17.txt")
+        elif os.path.exists("REPORTS\\TRIP18.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP18.txt")
+        elif os.path.exists("REPORTS\\TRIP19.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP19.txt")
+        elif os.path.exists("REPORTS\\TRIP20.txt") == False:
+            os.rename(REPORTCHECK, "REPORTS\\TRIP20.txt")
+        TIMEMODE  = True
+        CHECKMODE = False
