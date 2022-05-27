@@ -37,8 +37,9 @@ server         = smtplib.SMTP('smtp.gmail.com', 587) #gmail  server
 ACCOUNT        = REPLACEME5
 TOKEN          = REPLACEME6
 client         = Client(ACCOUNT,TOKEN)               #twilio client
-# Your Phone Number for Notification
+# Your Phone Number for Notification & Twilio phone for sending sms
 your_phone     = REPLACEME7
+twilio_phone   = REPLACEME8
 # OTS PARAMETER VARS
 OTS            = True
 runningT       = True
@@ -753,4 +754,102 @@ while OTS == True:
                         time.sleep(0.1)
                         message = client.messages.create(
                                 to     = OVERWATCH,
-                                from_  = 
+                                from_  = twilio_phone,
+                                body   = "OVERWATCH. Your Operator just activated Flight Mode.   -41"
+                                )
+                        if os.path.exists(REPORTTIME) == False:
+                                report = open(REPORTTIME, 'w')
+                                report.write(now + " FLIGHT MODE ACTIVATED")
+                                report.close()
+                        elif os.path.exists(REPORTTIME) == True:
+                                report = open(REPORTTIME, 'a')
+                                report.write("\n" + now + " FLIGHT MODE ACTIVATED")
+                                report.close()
+                        empty_folder(mail)
+                        pending = True
+                        while pending == True:
+                                now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                                now = str(now)
+                                print(clear)
+                                print(Fore.LIGHTRED_EX+"               !!!-            FLIGHT  MODE          -!!!"+Style.RESET_ALL)
+                                print(Fore.YELLOW     +"               Pending for arrival message from Operator..."+Style.RESET_ALL)
+                                LoggedIn = False
+                                while LoggedIn == False:
+                                    now = datetime.datetime.today().strftime("%H:%M:%S %d-%m-%Y")
+                                    now = str(now)
+                                    try:
+                                        mail = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+                                        mail.login(fromaddr, pw)
+                                        LoggedIn = True
+                                    except (imaplib.IMAP4.error, imaplib.IMAP4.abort):
+                                        print("LOGIN FAILED")
+                                        if os.path.exists("ERRORLOG.txt") == False:
+                                            report = open("ERRORLOG.txt", 'w')
+                                            report.write(now + " LOGINERROR")
+                                            report.close()
+                                        elif os.path.exists("ERRORLOG.txt") == True:
+                                            report = open("ERRORLOG.txt", 'a')
+                                            report.write("\n" + now + " LOGINERROR")
+                                            report.close()
+                                listloop = True
+                                while listloop == True:
+                                    try:
+                                        mail.list()
+                                        mail.select("inbox")
+                                        listloop = False
+                                    except:
+                                        print("ERROR (mail.list)")
+                                result, data   = mail.search(None, 'SUBJECT "[OTS]"')
+                                result2, data2 = mail.search(None, 'FROM "noreply@findmespot.com"')
+                                ids  = data[0]
+                                ids2 = data2[0]
+                                id_list  = ids.split()
+                                id_list += ids2.split()
+                                noemails = True
+                                try:
+                                        latest_email_id = id_list[-1]
+                                        noemails = False
+                                except IndexError:
+                                        print()
+                                        print("               WAITING FOR CONFIRMATION SINCE " + str(timerNOW))
+                                        noemails = True
+                                        time.sleep(1)
+                                        print(clear)
+                                if noemails == False:
+                                        def empty_folder(m, do_expunge=True):
+                                                print(Fore.LIGHTGREEN_EX + "CHECKED IN! " + Style.RESET_ALL + Fore.GREEN + now + Style.RESET_ALL)
+                                                m.select("inbox")  # select all trash
+                                                m.store("1:*", '+FLAGS', '\\Deleted')  # Flag all Trash as Deleted
+                                                if do_expunge:  # See Gmail Settings -> Forwarding and POP/IMAP -> Auto-Expunge
+                                                        m.expunge()  # not need if auto-expunge enabled
+                                                else:
+                                                        print("Expunge was skipped.")
+                                                        return
+                                        result, data = mail.fetch(latest_email_id,"RFC822")
+                                        m = mailparser.parse_from_bytes(data[0][1])
+                                        text = "From: " #the Signature of emails sent by my phone. After that, anything is irrelevant
+                                        entry = m.body.split(text, 1)[0]
+                                        message = entry.upper()
+                                        empty_folder(mail)
+                                        if "CHECK" in message:
+                                                if "(" in message and ")" in message:
+                                                    coordinates = re.findall(regex,message)
+                                                    coordinates = str(coordinates)
+                                                else:
+                                                    coordinates = "[no coordinates]"
+                                                check = "Flight End("+now+" "+coordinates+")"
+                                                del last3check[0]
+                                                last3check.append(check)
+                                                gmail_send("CONFIRMATION","FLIGHT MODE ENDED. "+str(last3check)+" -41")
+                                                if os.path.exists(REPORTTIME) == False:
+                                                        report = open(REPORTTIME, 'w')
+                                                        report.write(now + " FLIGHT MODE ENDED.")
+                                                        report.close()
+                                                elif os.path.exists(REPORTTIME) == True:
+                                                        report = open(REPORTTIME, 'a')
+                                                        report.write("\n" + now + " FLIGHT MODE ENDED.")
+                                                        report.close()
+                                                        empty_folder(mail)
+                                                message = client.messages.create(
+                                                to     = OVERWATCH,
+                                                from_  = 
